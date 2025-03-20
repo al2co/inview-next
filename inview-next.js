@@ -1,7 +1,8 @@
 $(function(){
   //＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
-  $('.inview').each(function() {
+  $('.inview').each(function(index) {
     $(this).addClass('animate__animated');
+    $(this).attr('data-inview', index + 1);
   });
   //＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
   var scroll;
@@ -16,6 +17,7 @@ $(function(){
       var objTop = $this.offset().top;
       var objBottom = objTop + objH;
       var offset = parseInt($this.data('inview-offset')) || 0;
+      
 
       // オフセットを考慮した判定
       var triggerTop = objTop - offset;
