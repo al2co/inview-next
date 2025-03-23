@@ -1,56 +1,41 @@
-$(function(){
-  //＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
-  $('.inview').each(function(index) {
-    $(this).addClass('animate__animated');
-    $(this).attr('data-inview', index + 1);
-  });
-  //＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
-  var scroll;
-  var winH = $(window).height();
+(function($) {
+  $.fn.inviewAnimation = function(options) {
+    var settings = $.extend({
+      offset: 0
+    }, options);
 
-  $(window).on('scroll', function() {
-    scroll = $(window).scrollTop();
-
-    $('.inview').each(function() {
+    return this.each(function(index) {
       var $this = $(this);
-      var objH = $this.outerHeight();
-      var objTop = $this.offset().top;
-      var objBottom = objTop + objH;
-      var offset = parseInt($this.data('inview-offset')) || 0;
-      
+      $this.addClass('animate__animated').attr('data-inview', index + 1);
 
-      // オフセットを考慮した判定
-      var triggerTop = objTop - offset;
-      var triggerBottom = objBottom + offset;
+      $(window).on('scroll', function() {
+        var scroll = $(window).scrollTop();
+        var winH = $(window).height();
+        var objH = $this.outerHeight();
+        var objTop = $this.offset().top;
+        var objBottom = objTop + objH;
 
-      // 要素が画面内に入った場合
-      if (scroll + winH >= triggerTop && scroll <= triggerBottom) {
-        $this.addClass("inview-in");
-        $this.removeClass("inview-out");
+        var triggerTop = objTop - settings.offset;
+        var triggerBottom = objBottom + settings.offset;
 
-        // Data属性inview-inの値をClassとして付与
-        var inviewClasses = $this.data('inview-in');
-        if (inviewClasses) {
-          var classArray = inviewClasses.split(',');
-          classArray.forEach(function(className) {
-            $this.addClass(className.trim()); // 前後の空白を削除してクラスを追加
-          });
+        if (scroll + winH >= triggerTop && scroll <= triggerBottom) {
+          $this.addClass("inview-in").removeClass("inview-out");
+          var inviewInClasses = $this.data('inview-in');
+          if (inviewInClasses) {
+            inviewInClasses.split(',').forEach(function(className) {
+              $this.addClass(className.trim());
+            });
+          }
+        } else {
+          $this.removeClass("inview-in").addClass("inview-out");
+          var inviewOutClasses = $this.data('inview-out');
+          if (inviewOutClasses) {
+            inviewOutClasses.split(',').forEach(function(className) {
+              $this.removeClass(className.trim());
+            });
+          }
         }
-      } else {
-        // 要素が画面外に出た場合
-        $this.removeClass("inview-in");
-        $this.addClass("inview-out");
-
-        // Data属性inview-outの値をClassから削除
-        var inviewClasses = $this.data('inview-out');
-        if (inviewClasses) {
-          var classArray = inviewClasses.split(',');
-          classArray.forEach(function(className) {
-            $this.removeClass(className.trim()); // 前後の空白を削除してクラスを追加
-          });
-        }
-      }
+      });
     });
-  });
-  //＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
-});
+  };
+})(jQuery);
